@@ -26,15 +26,26 @@ import android.util.Log;
 import java.util.HashMap;
 
 public class Contact {
+    // 静态全局联系人缓存：键为电话号码，值为联系人名称/信息，全局复用避免重复查询数据库
     private static HashMap<String, String> sContactCache;
+    // 日志TAG：用于打印日志，标识该日志来自联系人模块
     private static final String TAG = "Contact";
+
+    /**
+     * 来电号码匹配查询条件（SQL Where子句）
+     * 作用：从系统联系人数据库中，精准匹配【与来电号码一致】的联系人数据
+     * 基于Android系统联系人ContactsContract数据库表结构查询
+     */
 
     private static final String CALLER_ID_SELECTION = "PHONE_NUMBERS_EQUAL(" + Phone.NUMBER
     + ",?) AND " + Data.MIMETYPE + "='" + Phone.CONTENT_ITEM_TYPE + "'"
     + " AND " + Data.RAW_CONTACT_ID + " IN "
-            + "(SELECT raw_contact_id "
-            + " FROM phone_lookup"
-            + " WHERE min_match = '+')";
+            // 1. 号码匹配：判断数据库中的号码 与 传入的来电号码(?) 相等（PhoneNumberUtils匹配规则）
+            // 2. 数据类型筛选：只查询【电话类型】的联系人数据，排除邮箱、地址等其他数据
+            // 3. 关联子查询：只保留phone_lookup表中匹配的原始联系人ID，优化查询效率
+            + "(SELECT raw_contact_id "      // 子查询：查询匹配的原始联系人ID
+            + " FROM phone_lookup"           // 系统联系人优化表，专门用于号码快速查询
+            + " WHERE min_match = '+')";    // 匹配国际号码格式（以+开头的号码）
 
     public static String getContact(Context context, String phoneNumber) {
         if(sContactCache == null) {
