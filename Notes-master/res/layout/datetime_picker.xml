@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2010-2011, The MiCode Open Source Community (www.micode.net)
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_gravity="center_horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <NumberPicker
+        android:id="@+id/date"
+        android:layout_width="120dip"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        />
+
+    <NumberPicker
+        android:id="@+id/hour"
+        android:layout_width="50dip"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dip"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        />
+
+    <NumberPicker
+        android:id="@+id/minute"
+        android:layout_width="50dip"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dip"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        />
+
+    <NumberPicker
+        android:id="@+id/amPm"
+        android:layout_width="50dip"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dip"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        />
+</LinearLayout>
+
+<!--
+================================================================================
+文件注释说明
+================================================================================
+
+文件路径: layout/datetime_picker.xml
+文件类型: layout
+创建时间: 2010-2011
+最后修改: 2026-04-01
+
+功能描述:
+自定义日期时间选择器布局，包含日期、小时、分钟和上午/下午四个数字选择器。
+
+主要元素说明:
+1. LinearLayout: 水平线性布局容器，居中对齐
+2. NumberPicker (date): 日期选择器，宽度 120dip
+3. NumberPicker (hour): 小时选择器，宽度 50dip
+4. NumberPicker (minute): 分钟选择器，宽度 50dip
+5. NumberPicker (amPm): 上午/下午选择器，宽度 50dip
+
+使用场景:
+在以下功能中使用：
+- 设置便签提醒时间
+- 编辑便签的创建/修改时间
+- 任何需要自定义日期时间选择的界面
+
+注意事项:
+1. 所有 NumberPicker 都设置为可获取焦点，支持触摸操作
+2. 各选择器之间有 5dip 的左边距，提供视觉分隔
+3. 使用自定义宽度，确保在屏幕上合理布局
+4. 日期选择器较宽，可能显示月份和日期
+
+相关文件:
+- NoteEditActivity.java (便签编辑界面)
+- WorkingNote.java (便签业务模型)
+- DateTimePickerDialog.java (日期时间选择对话框)
+
+================================================================================
+-->

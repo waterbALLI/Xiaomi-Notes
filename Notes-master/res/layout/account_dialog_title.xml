@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Copyright (c) 2010-2011, The MiCode Open Source Community (www.micode.net)
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:id="@+id/account_dialog_title"
+        style="?android:attr/textAppearanceMedium"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:layout_marginTop="-2.7dip"
+        android:layout_marginBottom="-2.7dip"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/account_dialog_subtitle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dip"
+        android:layout_marginBottom="1dip"
+        android:gravity="center"/>
+
+</LinearLayout>
+
+<!--
+================================================================================
+文件注释说明
+================================================================================
+
+文件路径: layout/account_dialog_title.xml
+文件类型: layout
+创建时间: 2010-2011
+最后修改: 2026-04-01
+
+功能描述:
+账户选择对话框的标题布局，包含主标题和副标题的文本显示区域。
+
+主要元素说明:
+1. LinearLayout: 垂直线性布局容器
+2. TextView (account_dialog_title): 主标题文本，使用中等文本外观样式
+3. TextView (account_dialog_subtitle): 副标题文本，显示账户详细信息
+
+使用场景:
+在以下对话框中使用：
+- Google Tasks 账户选择对话框
+- 同步设置中的账户选择界面
+- 需要显示账户信息的对话框标题
+
+注意事项:
+1. 主标题使用单行显示，超出部分以省略号结尾
+2. 主标题有负边距调整，用于精确的视觉对齐
+3. 副标题在主标题下方显示，有适当的间距
+4. 两个文本视图都居中对齐
+
+相关文件:
+- GTaskSyncService.java (Google Tasks 同步服务)
+- NoteListActivity.java (主界面，包含同步设置)
+- strings.xml (相关文本资源)
+
+================================================================================
+-->

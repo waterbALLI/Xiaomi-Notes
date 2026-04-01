@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Copyright (c) 2010-2011, The MiCode Open Source Community (www.micode.net)
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="50dip"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/preferences_add_account" />
+</LinearLayout>
+
+<!--
+================================================================================
+文件注释说明
+================================================================================
+
+文件路径: layout/add_account_text.xml
+文件类型: layout
+创建时间: 2010-2011
+最后修改: 2026-04-01
+
+功能描述:
+"添加账户"文本项的布局，用于在账户列表底部显示添加新账户的选项。
+
+主要元素说明:
+1. LinearLayout: 垂直线性布局容器，设置最小高度和垂直居中
+2. TextView: 显示"添加账户"文本，使用中等文本外观样式
+
+使用场景:
+在以下界面中使用：
+- 账户选择对话框的底部
+- 同步设置中的账户列表
+- 需要提供添加账户选项的列表视图
+
+注意事项:
+1. 布局设置最小高度为 50dip，确保触摸区域足够大
+2. 文本内容来自字符串资源 preferences_add_account
+3. 文本居中对齐，垂直居中显示
+4. 使用 textAppearanceMedium 样式，确保文本清晰可读
+
+相关文件:
+- account_dialog_title.xml (账户对话框标题)
+- preferences.xml (偏好设置配置)
+- strings.xml (相关文本资源)
+
+================================================================================
+-->

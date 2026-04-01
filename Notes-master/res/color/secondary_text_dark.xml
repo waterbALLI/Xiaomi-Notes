@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Copyright (c) 2010-2011, The MiCode Open Source Community (www.micode.net)
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:color="#50000000" />
+</selector>
+
+<!--
+================================================================================
+文件注释说明
+================================================================================
+
+文件路径: color/secondary_text_dark.xml
+文件类型: color
+创建时间: 2010-2011
+最后修改: 2026-04-01
+
+功能描述:
+定义深色主题下的次要文本颜色选择器，用于显示辅助性或次要的文本内容。
+
+主要元素说明:
+1. selector: 颜色选择器，根据状态选择颜色
+2. item: 颜色定义项，值为半透明黑色 (#50000000)
+
+使用场景:
+在深色主题界面中，用于显示：
+- 辅助说明文字
+- 次要标签文本
+- 时间戳等非主要信息
+
+注意事项:
+1. 颜色值为 #50000000，表示 31.25% 不透明度的黑色
+2. 此颜色选择器仅包含一个默认状态的颜色定义
+3. 适用于 Android API Level 14 及以上版本
+
+相关文件:
+- primary_text_dark.xml (主要文本颜色)
+- colors.xml (其他颜色定义)
+- styles.xml (样式定义)
+
+================================================================================
+-->

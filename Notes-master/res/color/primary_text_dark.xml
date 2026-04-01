@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Copyright (c) 2010-2011, The MiCode Open Source Community (www.micode.net)
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:state_pressed="true" android:color="#88555555" />
+  <item android:state_selected="true" android:color="#ff999999" />
+  <item android:color="#ff000000" />
+</selector>
+
+<!--
+================================================================================
+文件注释说明
+================================================================================
+
+文件路径: color/primary_text_dark.xml
+文件类型: color
+创建时间: 2010-2011
+最后修改: 2026-04-01
+
+功能描述:
+定义深色主题下的主要文本颜色选择器，根据不同的交互状态显示不同的颜色。
+
+主要元素说明:
+1. selector: 颜色选择器，根据状态选择颜色
+2. item (state_pressed): 按下状态的颜色 (#88555555，53.33% 不透明度的深灰色)
+3. item (state_selected): 选中状态的颜色 (#ff999999，不透明浅灰色)
+4. item (default): 默认状态的颜色 (#ff000000，不透明黑色)
+
+使用场景:
+在深色主题界面中，用于显示：
+- 主要标题文本
+- 重要内容文字
+- 可交互的文本元素（按钮、链接等）
+
+注意事项:
+1. 包含三种状态：按下、选中、默认
+2. 按下状态使用半透明深灰色，提供视觉反馈
+3. 选中状态使用浅灰色，突出显示当前选中项
+4. 默认状态使用纯黑色，作为主要文本颜色
+
+相关文件:
+- secondary_text_dark.xml (次要文本颜色)
+- colors.xml (其他颜色定义)
+- styles.xml (样式定义)
+
+================================================================================
+-->

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Copyright (c) 2010-2011, The MiCode Open Source Community (www.micode.net)
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_delete"
+        android:title="@string/menu_delete" />
+
+    <item
+        android:id="@+id/menu_font_size"
+        android:title="@string/menu_font_size"/>
+
+    <item
+        android:id="@+id/menu_list_mode"
+        android:title="@string/menu_list_mode" />
+
+    <item
+        android:id="@+id/menu_share"
+        android:title="@string/menu_share"/>
+
+    <item
+        android:id="@+id/menu_send_to_desktop"
+        android:title="@string/menu_send_to_desktop"/>
+
+    <item
+        android:id="@+id/menu_alert"
+        android:title="@string/menu_alert" />
+
+    <item
+        android:id="@+id/menu_delete_remind"
+        android:title="@string/menu_remove_remind" />
+</menu>
+
+<!--
+================================================================================
+文件注释说明
+================================================================================
+
+文件路径: menu/call_note_edit.xml
+文件类型: menu
+创建时间: 2010-2011
+最后修改: 2026-04-01
+
+功能描述:
+通话记录便签编辑界面的选项菜单，提供对通话记录便签的各种操作选项。
+
+主要元素说明:
+1. menu: 菜单容器
+2. item (menu_delete): 删除便签选项
+3. item (menu_font_size): 字体大小设置选项
+4. item (menu_list_mode): 列表模式切换选项
+5. item (menu_share): 分享便签选项
+6. item (menu_send_to_desktop): 发送到桌面选项
+7. item (menu_alert): 设置提醒选项
+8. item (menu_delete_remind): 删除提醒选项
+
+使用场景:
+在通话记录便签编辑界面中使用，当用户点击菜单按钮时显示。
+
+注意事项:
+1. 所有菜单项的文本都来自字符串资源
+2. 包含便签的基本操作（删除、分享）
+3. 包含显示设置（字体大小、列表模式）
+4. 包含提醒相关操作（设置提醒、删除提醒）
+5. 包含发送到桌面的快捷操作
+
+相关文件:
+- CallNote.java (通话记录便签数据模型)
+- NoteEditActivity.java (便签编辑界面)
+- strings.xml (相关文本资源)
+
+================================================================================
+-->

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Copyright (c) 2010-2011, The MiCode Open Source Community (www.micode.net)
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<EditText
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/et_foler_name"
+    android:layout_width="fill_parent"
+    android:hint="@string/hint_foler_name"
+    android:layout_height="fill_parent" />
+
+<!--
+================================================================================
+文件注释说明
+================================================================================
+
+文件路径: layout/dialog_edit_text.xml
+文件类型: layout
+创建时间: 2010-2011
+最后修改: 2026-04-01
+
+功能描述:
+简单的文本编辑对话框布局，包含一个全屏的文本输入框。
+
+主要元素说明:
+1. EditText (et_foler_name): 文本输入框，用于输入文件夹名称
+
+使用场景:
+在以下对话框中使用：
+- 创建新文件夹对话框
+- 重命名文件夹对话框
+- 任何需要简单文本输入的对话框
+
+注意事项:
+1. 输入框使用 hint 属性显示提示文本"文件夹名称"
+2. 布局填充整个可用空间，提供足够的输入区域
+3. 注意元素ID拼写为"et_foler_name"（可能是拼写错误，应为"folder"）
+4. 使用 fill_parent 确保输入框占据整个对话框空间
+
+相关文件:
+- folder_list_item.xml (文件夹列表项)
+- NoteListActivity.java (主界面，包含文件夹管理)
+- strings.xml (相关文本资源)
+
+================================================================================
+-->
