@@ -18,3 +18,40 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/action_select_all" android:title="@string/menu_select_all" />
 </menu>
+
+<!--
+================================================================================
+文件注释说明
+================================================================================
+
+文件路径: menu/note_list_dropdown.xml
+文件类型: menu
+创建时间: 2010-2011
+最后修改: 2026-04-01
+
+功能描述:
+便签列表下拉菜单的选项菜单，仅包含全选功能选项。
+
+主要元素说明:
+1. menu: 菜单容器
+2. item (action_select_all): 全选便签选项
+
+使用场景:
+在便签列表界面中使用，作为下拉菜单显示：
+- 在多选模式下全选所有便签
+- 批量操作前的选择准备
+
+注意事项:
+1. 菜单项文本来自字符串资源 menu_select_all
+2. 这是最简单的下拉菜单，仅包含一个全选选项
+3. 使用 action_select_all 作为 ID，符合 ActionBar 模式
+4. 可能用于多选操作模式下的快捷操作
+
+相关文件:
+- note_list_dropdown_menu.xml (下拉菜单导航栏布局)
+- NoteListActivity.java (便签列表界面逻辑)
+- note_list_options.xml (其他列表选项菜单)
+- strings.xml (相关文本资源)
+
+================================================================================
+-->
