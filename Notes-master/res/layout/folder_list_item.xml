@@ -27,3 +27,40 @@
         android:gravity="center"
         android:textAppearance="@style/TextAppearancePrimaryItem" />
 </LinearLayout>
+
+<!--
+================================================================================
+文件注释说明
+================================================================================
+
+文件路径: layout/folder_list_item.xml
+文件类型: layout
+创建时间: 2010-2011
+最后修改: 2026-04-01
+
+功能描述:
+文件夹列表项的布局，用于在文件夹选择列表中显示单个文件夹的名称。
+
+主要元素说明:
+1. LinearLayout: 线性布局容器，设置最小高度为 50dip
+2. TextView (tv_folder_name): 文件夹名称显示文本，使用 TextAppearancePrimaryItem 样式
+
+使用场景:
+在以下界面中使用：
+- 文件夹选择对话框
+- 便签移动到的文件夹选择列表
+- 文件夹管理界面中的列表项
+
+注意事项:
+1. 设置最小高度 50dip，确保触摸区域足够大
+2. 文本居中对齐，提供良好的视觉体验
+3. 使用自定义样式 TextAppearancePrimaryItem，确保文本外观一致
+4. 布局填充整个父容器，充分利用可用空间
+
+相关文件:
+- NoteListActivity.java (主界面，包含文件夹管理)
+- dialog_edit_text.xml (文件夹名称编辑对话框)
+- styles.xml (TextAppearancePrimaryItem 样式定义)
+
+================================================================================
+-->
