@@ -16,5 +16,12 @@
 -->
 
 <resources>
+    <!--
+        用户查询高亮颜色
+        用于在搜索结果中高亮显示匹配的文本
+        颜色值: #335b5b5b (ARGB格式)
+        - 33: 透明度 (约20%)
+        - 5b5b5b: RGB颜色值 (深灰色)
+    -->
     <color name="user_query_highlight">#335b5b5b</color>
 </resources>

@@ -16,9 +16,20 @@
 -->
 
 <resources>
+    <!--
+        文本字体尺寸定义
+        用于便签编辑和显示时的字体大小设置
+        单位: sp (缩放像素，根据用户偏好设置自动调整)
+    -->
+
+    <!-- 超大字体: 33sp -->
     <dimen name="text_font_size_super">33sp</dimen>
+    <!-- 大字体: 26sp -->
     <dimen name="text_font_size_large">26sp</dimen>
+    <!-- 中等字体: 20sp -->
     <dimen name="text_font_size_medium">20sp</dimen>
+    <!-- 正常字体: 17sp (默认字体大小) -->
     <dimen name="text_font_size_normal">17sp</dimen>
+    <!-- 小字体: 14sp -->
     <dimen name="text_font_size_small">14sp</dimen>
 </resources>

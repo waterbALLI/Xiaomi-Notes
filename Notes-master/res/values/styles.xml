@@ -16,52 +16,76 @@
 -->
 
 <resources>
+    <!--
+        小米便签应用样式定义文件
+        包含文本样式和应用主题配置
+    -->
+
+    <!-- ==================== 文本外观样式 ==================== -->
+    <!-- 超大文本样式: 使用超大字体，蓝色链接颜色 -->
     <style name="TextAppearanceSuper">
         <item name="android:textSize">@dimen/text_font_size_super</item>
         <item name="android:textColorLink">#0000ff</item>
     </style>
+
+    <!-- 大文本样式: 使用大字体，蓝色链接颜色 -->
     <style name="TextAppearanceLarge">
         <item name="android:textSize">@dimen/text_font_size_large</item>
         <item name="android:textColorLink">#0000ff</item>
     </style>
+
+    <!-- 中等文本样式: 使用中等字体，蓝色链接颜色 -->
     <style name="TextAppearanceMedium">
         <item name="android:textSize">@dimen/text_font_size_medium</item>
         <item name="android:textColorLink">#0000ff</item>
     </style>
+
+    <!-- 正常文本样式: 使用正常字体，蓝色链接颜色 -->
     <style name="TextAppearanceNormal">
         <item name="android:textSize">@dimen/text_font_size_normal</item>
         <item name="android:textColorLink">#0000ff</item>
     </style>
 
+    <!-- ==================== 列表项文本样式 ==================== -->
+    <!-- 主要列表项文本样式: 正常字体，深色主要文本颜色 -->
     <style name="TextAppearancePrimaryItem">
         <item name="android:textSize">@dimen/text_font_size_normal</item>
         <item name="android:textColor">@color/primary_text_dark</item>
     </style>
 
+    <!-- 次要列表项文本样式: 小字体，深色次要文本颜色 -->
     <style name="TextAppearanceSecondaryItem">
         <item name="android:textSize">@dimen/text_font_size_small</item>
         <item name="android:textColor">@color/secondary_text_dark</item>
     </style>
 
+    <!-- ==================== 菜单文本样式 ==================== -->
+    <!-- 菜单图标下方文本样式: 正常字体，黑色文本 -->
     <style name="TextAppearanceUnderMenuIcon">
         <item name="android:textSize">@dimen/text_font_size_normal</item>
         <item name="android:textColor">@android:color/black</item>
     </style>
 
+    <!-- ==================== 高亮文本样式 ==================== -->
+    <!-- 主要高亮文本样式: 正常字体，深色主要文本颜色 -->
     <style name="HighlightTextAppearancePrimary">
-    <item name="android:textSize">@dimen/text_font_size_normal</item>
+        <item name="android:textSize">@dimen/text_font_size_normal</item>
         <item name="android:textColor">@color/primary_text_dark</item>
     </style>
 
+    <!-- 次要高亮文本样式: 小字体，深色次要文本颜色 -->
     <style name="HighlightTextAppearanceSecondary">
         <item name="android:textSize">@dimen/text_font_size_small</item>
         <item name="android:textColor">@color/secondary_text_dark</item>
     </style>
 
+    <!-- ==================== 应用主题 ==================== -->
+    <!-- 便签应用主题: 基于Holo Light主题，自定义ActionBar样式 -->
     <style name="NoteTheme" parent="@android:style/Theme.Holo.Light">
         <item name="android:actionBarStyle">@style/NoteActionBarStyle</item>
     </style>
 
+    <!-- ActionBar样式: 隐藏ActionBar -->
     <style name="NoteActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar.Solid">
         <item name="android:displayOptions" />
         <item name="android:visibility">gone</item>
