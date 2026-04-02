@@ -17,25 +17,48 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!--
+        小米便签应用简体中文字符串资源文件
+        对应values/strings.xml的中文翻译版本
+        包含应用所有界面显示的中文文本内容
+        按功能区域分组注释
+    -->
+
+    <!-- ==================== 应用基本信息 ==================== -->
+    <!-- 应用名称 (中文) -->
     <string name="app_name">便签</string>
+    <!-- 桌面小部件名称 (中文) -->
     <string name="app_widget2x2">便签2x2</string>
     <string name="app_widget4x4">便签4x4</string>
+
+    <!-- 桌面小部件状态提示 (中文) -->
     <string name="widget_havenot_content">没有关联内容，点击新建便签。</string>
     <string name="widget_under_visit_mode">访客模式下，便签内容不可见</string>
+    <!-- ==================== 便签列表和基本操作 ==================== -->
+    <!-- 便签列表信息显示 (中文) -->
     <string name="notelist_string_info">...</string>
     <string name="notelist_menu_new">新建便签</string>
+
+    <!-- 提醒功能相关 (中文) -->
     <string name="delete_remind_time_message">成功删除提醒</string>
     <string name="set_remind_time_message">创建提醒</string>
     <string name="note_alert_expired">已过期</string>
+
+    <!-- 日期时间格式 (中文) -->
     <string name="format_date_ymd">yyyyMMdd</string>
     <string name="format_datetime_mdhm">MM月dd日 kk:mm</string>
+
+    <!-- 提醒对话框按钮 (中文) -->
     <string name="notealert_ok">知道了</string>
     <string name="notealert_enter">查看</string>
+
+    <!-- 链接类型识别 (中文) -->
     <string name="note_link_tel">呼叫电话</string>
     <string name="note_link_email">发送邮件</string>
     <string name="note_link_web">浏览网页</string>
     <string name="note_link_other">打开地图</string>
-    <!-- note list string -->
+    <!-- ==================== 菜单操作 ==================== -->
+    <!-- 主菜单选项 (中文) -->
     <string name="menu_create_folder">新建文件夹</string>
     <string name="menu_export_text">导出文本</string>
     <string name="menu_sync">同步</string>
@@ -119,8 +142,11 @@
     <string name="search">便签</string>
     <string name="datetime_dialog_ok">设置</string>
     <string name="datetime_dialog_cancel">取消</string>
-    <plurals name="search_results_title">
-        <item quantity="other"><xliff:g id="NUMBER">%1$s</xliff:g> 条符合“<xliff:g id="SEARCH">%2$s</xliff:g>”的搜索结果</item>
+    <!-- ==================== 复数形式 ==================== -->
+    <!-- 搜索结果标题 (中文，仅复数形式) -->
+    <plurals name=”search_results_title”>
+        <!-- 中文环境下通常只使用复数形式 -->
+        <item quantity=”other”><xliff:g id=”NUMBER”>%1$s</xliff:g> 条符合”<xliff:g id=”SEARCH”>%2$s</xliff:g>”的搜索结果</item>
     </plurals>
 
 </resources>

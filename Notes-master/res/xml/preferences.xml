@@ -17,11 +17,30 @@
 
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--
+        便签应用设置界面配置
+        定义设置界面中的偏好设置项和分类
+    -->
+
+    <!--
+        同步账号设置分类
+        用于分组显示账号相关的设置选项
+        key: pref_sync_account_key - 在代码中引用此分类的标识符
+    -->
     <PreferenceCategory
         android:key="pref_sync_account_key">
+        <!-- 此分类下的设置项通过代码动态添加 -->
     </PreferenceCategory>
 
+    <!-- 便签显示设置分类 -->
     <PreferenceCategory>
+        <!--
+            新建便签背景颜色随机设置
+            复选框偏好设置，控制新建便签时是否使用随机背景颜色
+            key: pref_key_bg_random_appear - 在代码中引用此设置的标识符
+            title: 引用字符串资源 preferences_bg_random_appear_title
+            defaultValue: false - 默认不启用随机背景颜色
+        -->
         <CheckBoxPreference
             android:key="pref_key_bg_random_appear"
             android:title="@string/preferences_bg_random_appear_title"

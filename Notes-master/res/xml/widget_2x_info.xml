@@ -14,10 +14,21 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
+ <!--
+        2x2桌面小部件配置
+        定义2x2尺寸便签桌面小部件的属性和行为
+    -->
 
+     <!-- 初始布局: 引用布局资源 widget_2x -->
+         <!-- 最小宽度: 146dip - 2x2小部件的标准宽度 -->
+           <!-- 最小高度: 146dip - 2x2小部件的标准高度 -->
 <appwidget-provider
     xmlns:android="http://schemas.android.com/apk/res/android"
+   
+
     android:initialLayout="@layout/widget_2x"
+
     android:minWidth="146dip"
+  
     android:minHeight="146dip">
 </appwidget-provider>

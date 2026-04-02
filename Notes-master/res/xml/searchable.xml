@@ -15,10 +15,32 @@
      limitations under the License.
 -->
 
+ <!--
+        便签搜索配置
+        定义应用在Android全局搜索中的行为和显示方式
+    -->
+
+    <!-- 搜索界面标签: 引用字符串资源 search_label -->
+
+    <!-- 搜索框提示文本: 引用字符串资源 search_hint -->
+
+    <!-- 搜索模式: queryRewriteFromText - 从文本查询重写 -->
+   
+
+    <!-- 搜索建议提供者权限: notes - 便签应用的ContentProvider权限 -->
+
+    <!-- 搜索建议点击动作: android.intent.action.VIEW - 查看便签 -->
+
+    <!-- 搜索设置描述: 引用字符串资源 search_setting_description -->
+
+    <!-- 包含在全局搜索中: true - 在Android全局搜索中显示此应用的搜索 -->
 <searchable
     xmlns:android="http://schemas.android.com/apk/res/android"
+   
     android:label="@string/search_label"
+ 
     android:hint="@string/search_hint"
+  
     android:searchMode="queryRewriteFromText"
 
     android:searchSuggestAuthority="notes"
