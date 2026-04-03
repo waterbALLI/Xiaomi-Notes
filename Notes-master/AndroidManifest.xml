@@ -19,22 +19,34 @@
     package="net.micode.notes"
     android:versionCode="1"
     android:versionName="0.1" >
+    <!-- 应用根配置：定义包名、版本号和版本名称 -->
 
     <uses-sdk android:minSdkVersion="14" />
+    <!-- 目标SDK版本：支持Android 4.0 (API Level 14)及以上 -->
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- 权限：写入外部存储，用于便签备份和恢复功能 -->
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+    <!-- 权限：安装桌面快捷方式，用于创建便签快捷方式 -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 权限：访问互联网，用于Google Tasks同步功能 -->
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <!-- 权限：读取联系人，用于通话记录便签功能 -->
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <!-- 权限：管理账户，用于Google账户同步功能 -->
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <!-- 权限：验证账户，用于Google账户认证 -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <!-- 权限：获取账户列表，用于获取Google账户信息 -->
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <!-- 权限：使用账户凭据，用于Google账户认证 -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- 权限：接收开机完成广播，用于重启后恢复提醒功能 -->
 
     <application
         android:icon="@drawable/icon_app"
         android:label="@string/app_name" >
+        <!-- 应用配置：定义应用图标和名称 -->
         <activity
             android:name=".ui.NotesListActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -43,11 +55,13 @@
             android:theme="@style/NoteTheme"
             android:uiOptions="splitActionBarWhenNarrow"
             android:windowSoftInputMode="adjustPan" >
+            <!-- 主Activity：便签列表界面，应用入口 -->
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!-- Intent过滤器：定义应用启动入口 -->
         </activity>
 
         <activity
@@ -55,6 +69,7 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
             android:theme="@style/NoteTheme" >
+            <!-- 便签编辑Activity：创建和编辑便签界面 -->
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -62,6 +77,7 @@
                 <data android:mimeType="vnd.android.cursor.item/text_note" />
                 <data android:mimeType="vnd.android.cursor.item/call_note" />
             </intent-filter>
+            <!-- Intent过滤器：查看便签内容 -->
 
             <intent-filter>
                 <action android:name="android.intent.action.INSERT_OR_EDIT" />
@@ -69,59 +85,72 @@
                 <data android:mimeType="vnd.android.cursor.item/text_note" />
                 <data android:mimeType="vnd.android.cursor.item/call_note" />
             </intent-filter>
+            <!-- Intent过滤器：插入或编辑便签 -->
 
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+            <!-- Intent过滤器：搜索便签功能 -->
 
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
+            <!-- 元数据：搜索配置，引用searchable.xml文件 -->
         </activity>
 
         <provider
             android:name="net.micode.notes.data.NotesProvider"
             android:authorities="micode_notes"
             android:multiprocess="true" />
+        <!-- ContentProvider：便签数据提供者，支持多进程访问 -->
 
         <receiver
             android:name=".widget.NoteWidgetProvider_2x"
             android:label="@string/app_widget2x2" >
+            <!-- 广播接收器：2x2桌面小部件 -->
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.appwidget.action.APPWIDGET_DELETED" />
                 <action android:name="android.intent.action.PRIVACY_MODE_CHANGED" />
             </intent-filter>
+            <!-- Intent过滤器：2x2小部件更新、删除和隐私模式变更 -->
 
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_2x_info" />
+            <!-- 元数据：2x2小部件配置，引用widget_2x_info.xml -->
         </receiver>
         <receiver
             android:name=".widget.NoteWidgetProvider_4x"
             android:label="@string/app_widget4x4" >
+            <!-- 广播接收器：4x4桌面小部件 -->
 
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.appwidget.action.APPWIDGET_DELETED" />
                 <action android:name="android.intent.action.PRIVACY_MODE_CHANGED" />
             </intent-filter>
+            <!-- Intent过滤器：4x4小部件更新、删除和隐私模式变更 -->
 
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_4x_info" />
+            <!-- 元数据：4x4小部件配置，引用widget_4x_info.xml -->
         </receiver>
 
         <receiver android:name=".ui.AlarmInitReceiver" >
+            <!-- 广播接收器：提醒初始化接收器 -->
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
+            <!-- Intent过滤器：接收开机完成广播 -->
         </receiver>
 
         <receiver
             android:name="net.micode.notes.ui.AlarmReceiver"
             android:process=":remote" >
+            <!-- 广播接收器：提醒接收器，运行在独立进程 -->
         </receiver>
 
         <activity
@@ -129,6 +158,7 @@
             android:label="@string/app_name"
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.Holo.Wallpaper.NoTitleBar" >
+            <!-- Activity：提醒弹窗界面，单实例模式 -->
         </activity>
 
         <activity
@@ -136,15 +166,18 @@
             android:label="@string/preferences_title"
             android:launchMode="singleTop"
             android:theme="@android:style/Theme.Holo.Light" >
+            <!-- Activity：设置界面，单顶模式 -->
         </activity>
 
         <service
             android:name="net.micode.notes.gtask.remote.GTaskSyncService"
             android:exported="false" >
+            <!-- Service：Google Tasks同步服务，不对外暴露 -->
         </service>
 
         <meta-data
             android:name="android.app.default_searchable"
             android:value=".ui.NoteEditActivity" />
+        <!-- 元数据：默认搜索Activity -->
     </application>
 </manifest>
