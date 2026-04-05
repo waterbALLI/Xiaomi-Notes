@@ -74,90 +74,142 @@ import java.util.regex.Pattern;
 
 public class NoteEditActivity extends Activity implements OnClickListener,
         NoteSettingChangedListener, OnTextViewChangeListener {
+    // 私有的静态内部类，用于列表头部视图的缓存（ViewHolder设计模式）
+    // 作用：避免在滚动列表时重复执行findViewById，提升性能
     private class HeadViewHolder {
-        public TextView tvModified;
+        public TextView tvModified;// 显示“修改时间”或“最后编辑时间”的文本框
 
-        public ImageView ivAlertIcon;
+        public ImageView ivAlertIcon;// 提醒图标（例如闹钟小图标），用于显示该便签设置了提醒
 
-        public TextView tvAlertDate;
+        public TextView tvAlertDate;// 提醒日期文本，显示具体的提醒时间（如“今天 14:30”）
 
-        public ImageView ibSetBgColor;
+        public ImageView ibSetBgColor;// 设置背景颜色的按钮（可能是画笔或调色板图标），点击后可以更改便签卡片背景色
     }
 
+    // 静态映射表：将背景颜色选择按钮的ID（资源ID）映射到对应的颜色常量
+    // Map的键：按钮的R.id（如R.id.iv_bg_yellow）
+    // Map的值：颜色常量（来自ResourceParser类，如ResourceParser.YELLOW）
     private static final Map<Integer, Integer> sBgSelectorBtnsMap = new HashMap<Integer, Integer>();
+    // 静态初始化块，在类首次加载时执行一次，用于填充上面的映射表
     static {
-        sBgSelectorBtnsMap.put(R.id.iv_bg_yellow, ResourceParser.YELLOW);
-        sBgSelectorBtnsMap.put(R.id.iv_bg_red, ResourceParser.RED);
-        sBgSelectorBtnsMap.put(R.id.iv_bg_blue, ResourceParser.BLUE);
-        sBgSelectorBtnsMap.put(R.id.iv_bg_green, ResourceParser.GREEN);
-        sBgSelectorBtnsMap.put(R.id.iv_bg_white, ResourceParser.WHITE);
+        sBgSelectorBtnsMap.put(R.id.iv_bg_yellow, ResourceParser.YELLOW);// 黄色按钮 -> 黄色常量
+        sBgSelectorBtnsMap.put(R.id.iv_bg_red, ResourceParser.RED);// 红色按钮 -> 红色常量
+        sBgSelectorBtnsMap.put(R.id.iv_bg_blue, ResourceParser.BLUE);// 蓝色按钮 -> 蓝色常量
+        sBgSelectorBtnsMap.put(R.id.iv_bg_green, ResourceParser.GREEN);// 绿色按钮 -> 绿色常量
+        sBgSelectorBtnsMap.put(R.id.iv_bg_white, ResourceParser.WHITE);// 白色按钮 -> 白色常量
     }
 
+    // 静态映射表：将背景颜色常量映射到对应的"选中状态"图标ID
+    // Map的键：颜色常量（来自ResourceParser类，如ResourceParser.YELLOW）
+    // Map的值：选中状态图标的资源ID（如R.id.iv_bg_yellow_select，通常是带对勾或高亮边框的图标）
     private static final Map<Integer, Integer> sBgSelectorSelectionMap = new HashMap<Integer, Integer>();
+    // 静态初始化块，在类首次加载时执行一次，用于填充上面的映射表
     static {
-        sBgSelectorSelectionMap.put(ResourceParser.YELLOW, R.id.iv_bg_yellow_select);
-        sBgSelectorSelectionMap.put(ResourceParser.RED, R.id.iv_bg_red_select);
-        sBgSelectorSelectionMap.put(ResourceParser.BLUE, R.id.iv_bg_blue_select);
-        sBgSelectorSelectionMap.put(ResourceParser.GREEN, R.id.iv_bg_green_select);
-        sBgSelectorSelectionMap.put(ResourceParser.WHITE, R.id.iv_bg_white_select);
+        sBgSelectorSelectionMap.put(ResourceParser.YELLOW, R.id.iv_bg_yellow_select);// 黄色常量 -> 黄色按钮的选中状态图标
+        sBgSelectorSelectionMap.put(ResourceParser.RED, R.id.iv_bg_red_select);// 红色常量 -> 红色按钮的选中状态图标
+        sBgSelectorSelectionMap.put(ResourceParser.BLUE, R.id.iv_bg_blue_select);// 蓝色常量 -> 蓝色按钮的选中状态图标
+        sBgSelectorSelectionMap.put(ResourceParser.GREEN, R.id.iv_bg_green_select);// 绿色常量 -> 绿色按钮的选中状态图标
+        sBgSelectorSelectionMap.put(ResourceParser.WHITE, R.id.iv_bg_white_select);// 白色常量 -> 白色按钮的选中状态图标
     }
 
+    // 映射表：按钮ID → 字体大小常量
+    // 用于：用户点击字体大小按钮时，获取对应的字体大小值
     private static final Map<Integer, Integer> sFontSizeBtnsMap = new HashMap<Integer, Integer>();
+    // 静态初始化块，填充字体大小按钮的映射表
     static {
-        sFontSizeBtnsMap.put(R.id.ll_font_large, ResourceParser.TEXT_LARGE);
-        sFontSizeBtnsMap.put(R.id.ll_font_small, ResourceParser.TEXT_SMALL);
-        sFontSizeBtnsMap.put(R.id.ll_font_normal, ResourceParser.TEXT_MEDIUM);
-        sFontSizeBtnsMap.put(R.id.ll_font_super, ResourceParser.TEXT_SUPER);
+        sFontSizeBtnsMap.put(R.id.ll_font_large, ResourceParser.TEXT_LARGE);// 大号字体按钮（可能是LinearLayout） -> 大号字体常量
+        sFontSizeBtnsMap.put(R.id.ll_font_small, ResourceParser.TEXT_SMALL);// 小号字体按钮 -> 小号字体常量
+        sFontSizeBtnsMap.put(R.id.ll_font_normal, ResourceParser.TEXT_MEDIUM);// 正常字体按钮 -> 中号字体常量
+        sFontSizeBtnsMap.put(R.id.ll_font_super, ResourceParser.TEXT_SUPER);// 超大号字体按钮 -> 超大号字体常量
     }
 
+    // 映射表：字体大小常量 → 选中图标ID
+    // 用于：显示当前便签使用什么字体大小时，高亮对应的选中图标
     private static final Map<Integer, Integer> sFontSelectorSelectionMap = new HashMap<Integer, Integer>();
+    // 静态初始化块，填充字体选中状态的映射表
     static {
-        sFontSelectorSelectionMap.put(ResourceParser.TEXT_LARGE, R.id.iv_large_select);
-        sFontSelectorSelectionMap.put(ResourceParser.TEXT_SMALL, R.id.iv_small_select);
-        sFontSelectorSelectionMap.put(ResourceParser.TEXT_MEDIUM, R.id.iv_medium_select);
-        sFontSelectorSelectionMap.put(ResourceParser.TEXT_SUPER, R.id.iv_super_select);
+        sFontSelectorSelectionMap.put(ResourceParser.TEXT_LARGE, R.id.iv_large_select);// 大号字体常量 -> 大号字体的选中图标
+        sFontSelectorSelectionMap.put(ResourceParser.TEXT_SMALL, R.id.iv_small_select);// 小号字体常量 -> 小号字体的选中图标
+        sFontSelectorSelectionMap.put(ResourceParser.TEXT_MEDIUM, R.id.iv_medium_select);// 中号字体常量 -> 中号字体的选中图标
+        sFontSelectorSelectionMap.put(ResourceParser.TEXT_SUPER, R.id.iv_super_select);// 超大号字体常量 -> 超大号字体的选中图标
     }
 
+    // 调试相关
+    // 日志标签，用于Logcat中过滤该类的日志输出
     private static final String TAG = "NoteEditActivity";
-
+    // UI组件相关
+    // 列表头部的ViewHolder（缓存了头部视图的引用，如修改时间、提醒图标等）
     private HeadViewHolder mNoteHeaderHolder;
-
+    // 头部视图面板（包含便签的元信息显示区域）
     private View mHeadViewPanel;
-
+    // 背景颜色选择器面板（点击后弹出颜色选择界面
     private View mNoteBgColorSelector;
-
+    // 字体大小选择器面板（点击后弹出字体大小选项）
     private View mFontSizeSelector;
-
+    // 便签内容编辑器（核心输入控件，用于编辑便签文本）
     private EditText mNoteEditor;
-
+    // 便签编辑器面板（包裹EditText的容器，可能包含格式工具栏）
     private View mNoteEditorPanel;
-
+    // 正在编辑的便签对象（工作副本，封装了便签的数据和操作）
     private WorkingNote mWorkingNote;
-
+    //偏好设置相关
+    // 共享偏好实例（用于保存用户设置，如字体大小偏好）
     private SharedPreferences mSharedPrefs;
+    // 当前使用的字体大小ID（对应ResourceParser中的TEXT_XXX常量）
     private int mFontSizeId;
-
+    // 字体大小设置的偏好键名（用于保存到SharedPreferences）
     private static final String PREFERENCE_FONT_SIZE = "pref_font_size";
-
+    // 快捷方式相关
+    // 快捷方式图标标题的最大长度（限制为10个字符，超出可能截断）
     private static final int SHORTCUT_ICON_TITLE_MAX_LEN = 10;
-
+    // 复选框符号相关
+    // 已勾选状态的符号：√（对勾，Unicode字符U+221A）
     public static final String TAG_CHECKED = String.valueOf('\u221A');
+    // 未勾选状态的符号：□（空心方框，Unicode字符U+25A1）
     public static final String TAG_UNCHECKED = String.valueOf('\u25A1');
+    //便签列表相关
+    // 编辑文本列表容器（可能用于显示便签中的待办事项列表或多段文本）
+
 
     private LinearLayout mEditTextList;
+    //搜索高亮相关
+    // 用户搜索的关键词（从外部传入，用于在便签中高亮显示）
 
     private String mUserQuery;
+    // 正则表达式模式（用于匹配搜索关键词，实现高亮功能）
     private Pattern mPattern;
 
+
     @Override
+    /**
+     * Activity创建时的回调方法
+     * @param savedInstanceState 保存的实例状态（如果Activity因配置变更被销毁重建，此参数非null）
+     */
     protected void onCreate(Bundle savedInstanceState) {
+        // 调用父类的onCreate方法，完成系统级初始化（
         super.onCreate(savedInstanceState);
+        // 设置内容视图，从布局文件 R.layout.note_edit 中加载UI组件
+        // note_edit.xml 定义了便签编辑界面的整体布局
         this.setContentView(R.layout.note_edit);
 
+        /**
+         * 初始化Activity状态的核心逻辑
+         *
+         * 条件判断：
+         * 1. savedInstanceState == null：Activity是首次创建（不是重建）
+         * 2. !initActivityState(getIntent())：从Intent中解析数据失败
+         *
+         * 如果满足上述条件（首次创建且初始化失败），则结束Activity
+         */
         if (savedInstanceState == null && !initActivityState(getIntent())) {
-            finish();
-            return;
+            finish();// 结束当前Activity，返回到上一页面
+            return;// 提前返回，不再执行后续代码
         }
+        /**
+         * 初始化资源
+         * 包括：查找视图控件、设置监听器、恢复用户偏好设置等
+         * 只有当Activity状态初始化成功时才会执行到这里
+         */
         initResources();
     }
 
@@ -166,16 +218,40 @@ public class NoteEditActivity extends Activity implements OnClickListener,
      * user load this activity, we should restore the former state
      */
     @Override
+    /**
+     * Activity被系统销毁后重建时调用的回调方法
+     * 触发场景：屏幕旋转、内存不足被系统杀死后恢复、配置变更等
+     *
+     * @param savedInstanceState 系统保存的Bundle对象，包含之前的状态数据
+     */
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        // 调用父类方法，让系统恢复默认的UI状态（如EditText中的文本）
         super.onRestoreInstanceState(savedInstanceState);
+        /**
+         * 检查条件：
+         * 1. savedInstanceState != null：确保有保存的状态数据
+         * 2. savedInstanceState.containsKey(Intent.EXTRA_UID)：检查是否包含便签的UID
+         *
+         * EXTRA_UID 通常用于存储便签的唯一标识ID
+         */
         if (savedInstanceState != null && savedInstanceState.containsKey(Intent.EXTRA_UID)) {
+            // 创建一个新的Intent对象（用于重新初始化Activity状态）
             Intent intent = new Intent(Intent.ACTION_VIEW);
+            // 从保存的Bundle中取出之前保存的便签UID，放回Intent中
+            // 这样initActivityState可以从Intent中获取到正确的便签ID
             intent.putExtra(Intent.EXTRA_UID, savedInstanceState.getLong(Intent.EXTRA_UID));
-            if (!initActivityState(intent)) {
+            /**
+             * 使用恢复出来的Intent重新初始化Activity状态
+             * initActivityState() 会：
+             * - 从Intent中解析便签ID
+             * - 加载对应的WorkingNote对象
+             * - 初始化搜索高亮等状态
+             */
+            if (!initActivityState(intent)) {// 如果初始化失败（例如便签已被删除），则结束Activity
                 finish();
                 return;
             }
-            Log.d(TAG, "Restoring from killed activity");
+            Log.d(TAG, "Restoring from killed activity");// 输出调试日志，表示从被销毁的状态中恢复
         }
     }
 
