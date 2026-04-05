@@ -22,14 +22,16 @@
     -->
 
     <!--
-        分享方式数组 (中文)
+        分享方式数组 (简体中文)
         定义便签可以分享到哪些应用的中文选项
         用于分享菜单的选项列表
+        对应values/arrays.xml中的menu_share_ways数组
+        注意：数组顺序与菜单显示顺序一致
     -->
     <string-array name="menu_share_ways">
-        <!-- 短信分享 -->
+        <!-- 短信分享 - 通过短信应用分享便签内容 -->
         <item>短信</item>
-        <!-- 邮件分享 -->
+        <!-- 邮件分享 - 通过邮件应用分享便签内容 -->
         <item>邮件</item>
     </string-array>
 </resources>
