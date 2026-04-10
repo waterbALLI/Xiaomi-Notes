@@ -5,6 +5,41 @@
           android:versionCode="1"
           android:versionName="0.1" >
 
+    <!--
+    文件注释说明
+    文件路径: app/src/main/AndroidManifest.xml
+    文件类型: AndroidManifest
+    创建时间: 未记录
+    最后修改: 2026-04-10
+    功能描述:
+    应用主清单文件，统一声明权限、组件注册与元数据配置，决定应用启动入口与系统交互方式。
+    主要元素说明:
+    uses-permission: 声明应用可使用的系统能力（存储、网络、联系人、账号等）
+    application: 应用级配置入口（图标、名称、备份策略、组件容器）
+    activity: 页面组件（列表页、编辑页、提醒页、设置页）
+    provider: 便签数据访问组件（ContentProvider）
+    receiver: 广播接收组件（小组件、开机恢复、闹钟触发）
+    service: 后台同步组件
+    meta-data: 搜索与小组件参数配置入口
+    使用场景:
+    安装应用时由系统读取；运行时用于页面跳转、广播响应、数据访问与后台同步。
+    注意事项:
+    Android 6.0+ 危险权限需结合运行时申请；含 intent-filter 的组件需显式 exported。
+    相关文件:
+    net/micode/notes/ui/NotesListActivity.java
+    net/micode/notes/ui/NoteEditActivity.java
+    net/micode/notes/data/NotesProvider.java
+    res/xml/searchable.xml
+    res/xml/widget_2x_info.xml
+    res/xml/widget_4x_info.xml
+    -->
+
+    <!-- ==================== 权限声明区 ==================== -->
+
+    <!-- 应用权限声明：文件写入、网络、联系人、账号、开机广播、桌面快捷方式等能力。 -->
+    <!-- 在android 6.0之前，只要在xml中标注了权限，在安装时会列出权限清单，如果同意，那么就会默认授权。
+     而 在6.0之后，虽然在 XML 里写了，但系统会把这些权限标记为 PROMPT（待询问）。即使安装了，
+     在你真正运行到相关功能时，手机依然会弹出那个经典的“允许”或“拒绝”对话框。-->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -15,16 +50,89 @@
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
+    <!-- ==================== 应用与组件注册区 ==================== -->
+    <!-- 应用全局配置：图标、名称、备份策略，以及所有组件注册入口。申明配置+资源分离 -->
+    <!-- 这里的 app_name 是一个字符串资源，定义在 res/values/strings.xml 中。是APP展示的第一个图标
+    android:label="@string/app_name"
+直白解释：设置应用的“真名”。
+深度内涵：@string/app_name 同样是资源引用。它指向 res/values/strings.xml 文件里的 app_name 键值对。
+开发规范：作为计算机专业的学生，你应该养成这种习惯——不要在代码里硬编码字符串。通过 XML 引用，如果你想把“小米便签”改成“Mi Notes”，
+只需要改一个地方，且方便做多语言国际化（比如英文系统显示英文名，中文系统显示中文名）。
+3. android:allowBackup="true"
+直白解释：开启“后悔药”功能（允许备份）。
+深度内涵：
+当用户换新手机或执行系统备份时，如果这个值是 true，Android 系统会自动备份应用的数据（比如你存的便签内容、设置项）到云端或本地存储。
+安全注意：在一些安全性极高的应用（如银行、加密钱包）中，通常会手动设为 false，防止数据被备份到不安全的地方。
+4. tools:replace="android:allowBackup"
+直白解释：强行“覆盖”规则。
+深度内涵：这是一个**构建工具（Build Tools）**指令，主要用于处理“依赖冲突”。
+场景模拟：假设你引入了一个第三方库（Library），那个库的清单文件里也写了 android:allowBackup="false"。
+在项目编译合并清单时，系统会纠结：到底听你的还是听它的？
+作用：加上这一行，就是在霸气宣告：“不管别的库怎么写，合并时以我当前这个文件的配置为准，强制替换掉冲突项”。-->
     <application
             android:icon="@drawable/icon_app"
             android:label="@string/app_name"
             android:allowBackup="true"
             tools:replace="android:allowBackup">
 
+        <!-- 兼容旧版网络代码所需的 Apache Http Legacy 库（可选）。
+        向现代 Android 系统申请，允许应用继续使用已经“过时”的老旧网络通信库（Apache HTTP）。 -->
         <uses-library
                 android:name="org.apache.http.legacy"
                 android:required="false" />
 
+        <!-- ==================== 页面组件（Activity） ==================== -->
+        <!-- 主页面：应用启动后首先进入的笔记列表页。
+         android: 开头的属性是由 Android 系统预先定义好的 命名空间属性。
+android:name 只是其中最基础的一个，用来指定“身份”。除了它之外，还有大量属性用来控制组件的外观、行为、启动方式和安全性。
+这段代码定义了应用中最重要的一个界面（Activity）：便签列表主界面。在 Android 开发中，Activity 相当于一个“窗口”或“页面”。
+
+这行配置不仅定义了它的外观，还决定了它如何与手机系统（比如点击图标启动）进行交互。
+
+1. 基础属性配置
+android:name=".ui.NotesListActivity"
+
+含义：指向对应的 Java 类文件。.ui 表示在包名路径下的 ui 子包中。它是该页面的逻辑控制中心。
+
+android:label="@string/app_name"
+
+含义：该界面的标题文字。通常在手机顶部的 ActionBar 或者多任务切换器中显示。
+
+android:theme="@style/NoteTheme"
+
+含义：指定该页面使用的皮肤/主题。定义了背景颜色、按钮样式、字体大小等视觉元素。
+
+android:exported="true"
+
+含义：是否允许外部启动。因为这个页面包含 LAUNCHER 入口（手机桌面点击图标启动），所以必须设为 true，否则系统桌面无法打开你的 App。
+
+2. 行为控制（开发者必看）
+android:launchMode="singleTop"（栈顶复用模式）
+
+作用：防止重复创建。如果这个页面已经在屏幕最上方显示了，你再次点击它时，系统不会新建一个 Activity 实例，而是复用现有的。这能节省内存并防止点击过快导致开了一堆相同的窗口。
+
+android:configChanges="keyboardHidden|orientation|screenSize"
+
+作用：防止因环境改变而重启。默认情况下，当你旋转屏幕或插拔键盘时，Android 会销毁并重建 Activity。加上这行代码，表示“这些变化我自己处理”，系统就不会重启页面，从而保持当前的用户输入和滚动位置。
+
+android:windowSoftInputMode="adjustPan"
+
+作用：处理软键盘遮挡。当弹出输入法键盘时，系统会把整个界面整体往上平移（Pan），以确保输入框不被键盘盖住。
+
+3. UI 布局策略
+android:uiOptions="splitActionBarWhenNarrow"
+
+作用：拆分操作栏。在手机屏幕很窄时，原本在顶部的菜单按钮（如新建、设置）会被移到屏幕底部。这是早期 Android 针对大屏幕趋势做的一种单手操作优化。
+
+4. 核心入口：<intent-filter>（意图过滤器）
+这是 Activity 最关键的“标签”，告诉系统这个 Activity 能干什么。
+
+XML
+<intent-filter>
+    <action android:name="android.intent.action.MAIN" />
+    <category android:name="android.intent.category.LAUNCHER" />
+</intent-filter>
+没有这两行会怎样？ 你的 App 依然可以安装，但在手机桌面上找不到图标。只有当其他应用（比如你在开发另一个 App）通过代码显式调用这个 Activity 时，它才会显示。-->
         <activity
                 android:name=".ui.NotesListActivity"
                 android:configChanges="keyboardHidden|orientation|screenSize"
@@ -40,53 +148,119 @@
             </intent-filter>
         </activity>
 
+        <!-- 编辑页面：负责查看/新建/编辑笔记，并接入搜索。NoteEditActivity）。它是用户停留时间最长的页面。 -->
         <activity
                 android:name=".ui.NoteEditActivity"
                 android:configChanges="keyboardHidden|orientation|screenSize"
                 android:launchMode="singleTop"
                 android:theme="@style/NoteTheme"
                 android:exported="true">
+            <!-- 处理外部或内部 VIEW 打开笔记。业务受理范围说明”。
+            它告诉 Android 系统：“如果有人想查看（VIEW）特定类型的数据（如便签），请把那个请求发给我。 -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="vnd.android.cursor.item/text_note" />
                 <data android:mimeType="vnd.android.cursor.item/call_note" />
             </intent-filter>
+            <!-- 处理“插入或编辑”动作。说明编辑业务的受理范围 -->
             <intent-filter>
                 <action android:name="android.intent.action.INSERT_OR_EDIT" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="vnd.android.cursor.item/text_note" />
                 <data android:mimeType="vnd.android.cursor.item/call_note" />
             </intent-filter>
+            <!-- 处理系统搜索入口。小米便签中，这允许用户在编辑界面直接发起搜索，或者让该 Activity 能够处理来自系统的搜索请求。
+            它由两部分组成：一个“大门”（intent-filter）和一个“说明书”（meta-data）。 -->
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+            <!-- 声明可搜索配置文件，供 SearchManager 读取。 搜索功能的“配置单”-->
             <meta-data
                     android:name="android.app.searchable"
                     android:resource="@xml/searchable" />
         </activity>
 
+        <!-- ==================== 数据组件（Provider） ==================== -->
+        <!-- 数据提供者：统一对外（应用内）提供笔记数据库的增删改查能力。
+         如果把 Activity 比作**“前台窗口”，那么 Provider 就是应用的“档案库管理员”**。它负责统一管理应用的数据（通常是 SQLite 数据库），并定义了数据访问的规范。
+
+1. 属性详细拆解
+android:name="net.micode.notes.data.NotesProvider"
+身份声明：指向具体的 Java 类。这个类必须继承自 android.content.ContentProvider。
+
+职责：这个类里实现了数据的增、删、改、查（CRUD）逻辑。当你调用 db.insert() 或 db.query() 时，真正的代码逻辑就在这里。
+
+android:authorities="micode_notes"
+核心：访问域名。
+
+重要性：这是该 Provider 的唯一标识。在整个手机系统中，authorities 必须是唯一的。
+
+用法：其他组件通过 content://micode_notes 这个 URI（统一资源标识符）来找到这个档案库。
+
+比如：content://micode_notes/notes 代表访问便签表。
+
+这就像是 Web 开发中的域名，通过它可以精确定位到具体的资源。
+
+android:multiprocess="true"
+含义：多进程支持。
+
+深度内涵：
+
+如果设为 false（默认），系统只会在主进程中创建一个 Provider 实例。如果其他进程想访问数据，必须通过跨进程通信（IPC），这会有性能损耗。
+
+设为 true，系统会在每一个访问它的进程中都实例化一个 NotesProvider。
+
+为什么小米便签要设为 true？ 因为你的 AlarmReceiver（闹钟接收器）运行在 :remote 独立进程。为了让闹钟进程能极速、直接地读取数据库（而不必跨进程调唤主进程），开启多进程模式能显著提高性能。
+
+android:exported="false"
+安全性：隐私保护。
+
+含义：是否允许其他应用访问你的数据。
+
+逻辑：
+
+设为 false 表示这个数据库是“私产”，只有小米便签应用内部（包括其所有的 Activity、Service、Receiver）可以访问。
+
+如果你想做一个插件或者允许别的 App 读取你的便签，就需要设为 true。
+
+2. 为什么要用 Provider 而不直接读数据库？
+作为 CS 专业的学生，你可以从**软件架构（封装性）**的角度理解：
+
+屏蔽底层细节：Activity 不需要知道底层是用 SQLite、Room 还是文件存储。它只需要给 Provider 发一个 URI，Provider 负责把结果吐出来。
+
+进程间通信（IPC）的标准化：Android 系统通过 Provider 提供了一套标准的、跨进程的数据交换协议。
+
+数据安全控制：你可以通过 Provider 细粒度地控制哪些表可以查，哪些字段不能改，甚至可以对不同的 URI 设置不同的权限。-->
         <provider
                 android:name="net.micode.notes.data.NotesProvider"
                 android:authorities="micode_notes"
                 android:multiprocess="true"
                 android:exported="false" />
 
+        <!-- ==================== 广播组件（Receiver） ==================== -->
+        <!-- 2x2 桌面小组件广播接收器。
+         这段代码定义了 Android 系统中的 Broadcast Receiver（广播接收器）。在这个具体的例子中，它扮演的是 桌面小组件（App Widget） 的逻辑控制器。
+
+小组件不像普通的 Activity 那样可以一直运行，它本质上是一个被动接收指令的组件。每当桌面需要刷新小组件的内容时，系统就会发送一个广播给这个 Receiver。-->
         <receiver
                 android:name=".widget.NoteWidgetProvider_2x"
                 android:label="@string/app_widget2x2"
                 android:exported="true">
+            <!-- 监听系统发送的更新小组件的广播。当用户把小组件添加到桌面，或者系统需要刷新小组件时，这些广播会被触发。 -->
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.appwidget.action.APPWIDGET_DELETED" />
                 <action android:name="android.intent.action.PRIVACY_MODE_CHANGED" />
             </intent-filter>
+            <!-- 指向该小组件的参数配置 XML。 -->
             <meta-data
                     android:name="android.appwidget.provider"
                     android:resource="@xml/widget_2x_info" />
         </receiver>
 
+        <!-- 4x4 桌面小组件广播接收器。 -->
         <receiver
                 android:name=".widget.NoteWidgetProvider_4x"
                 android:label="@string/app_widget4x4"
@@ -96,11 +270,13 @@
                 <action android:name="android.appwidget.action.APPWIDGET_DELETED" />
                 <action android:name="android.intent.action.PRIVACY_MODE_CHANGED" />
             </intent-filter>
+            <!-- 指向该小组件的参数配置 XML。 -->
             <meta-data
                     android:name="android.appwidget.provider"
                     android:resource="@xml/widget_4x_info" />
         </receiver>
 
+        <!-- 开机后初始化闹钟/提醒任务。 -->
         <receiver
                 android:name=".ui.AlarmInitReceiver"
                 android:exported="true">
@@ -109,12 +285,14 @@
             </intent-filter>
         </receiver>
 
+        <!-- 接收提醒闹钟广播，放在独立进程降低主进程压力。 -->
         <receiver
                 android:name="net.micode.notes.ui.AlarmReceiver"
                 android:process=":remote"
                 android:exported="false">
         </receiver>
 
+        <!-- 提醒触发时展示的全屏提示页面。 -->
         <activity
                 android:name=".ui.AlarmAlertActivity"
                 android:label="@string/app_name"
@@ -123,6 +301,8 @@
                 android:exported="false" >
         </activity>
 
+        <!-- 偏好设置页面。 singletop,如果该 Activity 已经在任务栈（Task Stack）的“栈顶”了，那么再次启动它时，
+        系统不会新建一个 Activity 实例，而是直接复用当前的。-->
         <activity
                 android:name="net.micode.notes.ui.NotesPreferenceActivity"
                 android:label="@string/preferences_title"
@@ -131,11 +311,26 @@
                 android:exported="false" >
         </activity>
 
+        <!-- 后台同步服务（如与云端任务系统同步）。android:name="net.micode.notes.gtask.remote.GTaskSyncService"
+
+指向代码：对应 Java 类。它继承自 android.app.Service 或其子类。
+
+职责：包含了所有联网同步、数据对比（本地 vs 云端）、冲突解决的逻辑。
+
+android:exported="false"
+
+安全性控制：这是一个非常关键的保护措施。
+
+含义：设置为 false 意味着这个服务是私有的。只有小米便签应用自己可以启动或绑定这个服务。
+
+原因：同步服务涉及用户的 Google 账号 Token 和私密的便签内容。如果设为 true，手机里的其他恶意应用可能会尝试启动你的同步服务，造成电量消耗或隐私泄露。 -->
         <service
                 android:name="net.micode.notes.gtask.remote.GTaskSyncService"
                 android:exported="false" >
         </service>
 
+        <!-- ==================== 应用元数据（meta-data） ==================== -->
+        <!-- 指定默认可响应全局搜索的页面。 -->
         <meta-data
                 android:name="android.app.default_searchable"
                 android:value=".ui.NoteEditActivity" />

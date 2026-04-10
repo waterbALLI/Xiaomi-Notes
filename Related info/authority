@@ -1,0 +1,22 @@
+Android 将权限分为四个核心等级。系统会根据这个等级来决定：是否需要用户同意、是否需要特定的系统签名。
+1. 普通权限 (Normal Permissions)这类权限风险极低，不会直接威胁到用户的隐私，也不会让应用获得过高的系统控制权。
+特点：只要你在 AndroidManifest.xml 中声明了，系统在安装时会自动授予，不需要用户手动点击“允许”。
+示例：android.permission.INTERNET（访问网络）android.permission.SET_ALARM（设置闹钟）
+android.permission.VIBRATE（控制震动）开发者视角：写了就能用，不需要处理运行时弹窗逻辑。
+2. 危险权限 (Dangerous Permissions / Runtime Permissions)这是 Android 6.0 (API 23) 之后引入的重点。
+这类权限涉及用户的核心隐私数据。特点：必须在 AndroidManifest.xml 中声明。
+运行时授权：即使声明了，代码执行到相关功能时，必须调用 API 弹窗询问用户。用户可以随时在设置里撤销这些权限。
+权限组 (Permission Groups)：为了不让弹窗太多烦死用户，Android 将这类权限分组。
+例如你申请了“读取联系人”，系统会自动授予同组的“写入联系人”。
+示例：READ_CONTACTS（联系人）ACCESS_FINE_LOCATION（精准定位）CAMERA（摄像头）WRITE_EXTERNAL_STORAGE（存储空间）
+3. 签名权限 (Signature Permissions)这类权限通常用于同一个开发者开发的多个应用之间共享数据，或者系统级应用。
+特点：只有当请求权限的应用与定义权限的应用使用**相同的数字签名（Certificate）**签署时，系统才会自动授予。
+应用场景：比如你开发了一套全家桶 App（如支付宝和蚂蚁财富），你希望它们之间有一些私密的通信通道，不对外开放，
+就可以定义一个 signature 等级的权限。示例：某些特定的硬件访问接口或厂商自定义的系统服务。
+4. 特权/系统权限 (SignatureOrSystem / Privileged Permissions)这是等级最高的权限，
+普通第三方应用（即使是你在应用商店下载的）通常无法获得。
+特点：仅授予安装在系统镜像（/system/priv-app/ 目录）中的应用，或者是与系统镜像签名相同的应用。
+能力：可以执行一些非常敏感的操作，比如静默安装应用、格式化手机、读取系统日志。
+示例：android.permission.INSTALL_PACKAGES（安装软件包）android.permission.REBOOT（重启手机）
+总结对照表等级 (Level)风险程度是否弹窗授予时机典型例子Normal低否安装时自动授予联网、震动Dangerous高 (隐私)是 (运行时)用户手动点击允许摄像头、
+定位、存储Signature中 (开发者内部)否签名一致时自动授予同厂商 App 数据共享Privileged极高否仅限预装系统应用
