@@ -17,9 +17,30 @@
 package net.micode.notes.data;
 
 import android.net.Uri;
+
+/**
+ * 文件注释说明：这一堆定义就是小米便签的配置中心，规定了笔记的类型、文件夹的结构、传参的名称以及桌面组件的规格
+ * 文件路径: app/src/main/java/net/micode/notes/data/Notes.java
+ * 文件类型: Data Contract（数据契约）
+ * 功能描述:
+ * 统一定义便签模块的数据常量，包括 ContentProvider authority、URI、
+ * 列名、MIME 类型、系统文件夹 ID 与跨组件传递参数 key。
+ *
+ * 使用场景:
+ * - data 层组装数据库查询与写入字段
+ * - ui/widget/alarm/sync 模块通过常量保持字段与 URI 一致
+ * - Intent 在 Activity/Service/Receiver 间传递业务参数
+ *
+ * 注意事项:
+ * - 本文件主要是常量约定，修改名称或值可能导致全局行为不一致
+ * - 历史拼写（如 INVALIDE/FOLER/TEMPARAY）属于兼容字段，不建议直接改名
+ */
 public class Notes {
+    // ContentProvider 的唯一 authority，需与 AndroidManifest 中 provider 配置一致。
     public static final String AUTHORITY = "micode_notes";
     public static final String TAG = "Notes";
+
+    // 笔记实体类型：普通笔记 / 文件夹 / 系统文件夹。
     public static final int TYPE_NOTE     = 0;
     public static final int TYPE_FOLDER   = 1;
     public static final int TYPE_SYSTEM   = 2;
@@ -35,6 +56,7 @@ public class Notes {
     public static final int ID_CALL_RECORD_FOLDER = -2;
     public static final int ID_TRASH_FOLER = -3;
 
+    // Intent extra keys：用于页面/服务/广播间传参。
     public static final String INTENT_EXTRA_ALERT_DATE = "net.micode.notes.alert_date";
     public static final String INTENT_EXTRA_BACKGROUND_ID = "net.micode.notes.background_color_id";
     public static final String INTENT_EXTRA_WIDGET_ID = "net.micode.notes.widget_id";
@@ -42,10 +64,12 @@ public class Notes {
     public static final String INTENT_EXTRA_FOLDER_ID = "net.micode.notes.folder_id";
     public static final String INTENT_EXTRA_CALL_DATE = "net.micode.notes.call_date";
 
+    // Widget 类型定义。
     public static final int TYPE_WIDGET_INVALIDE      = -1;
     public static final int TYPE_WIDGET_2X            = 0;
     public static final int TYPE_WIDGET_4X            = 1;
 
+    // 数据 MIME 类型别名，便于外部按类型区分数据记录。
     public static class DataConstants {
         public static final String NOTE = TextNote.CONTENT_ITEM_TYPE;
         public static final String CALL_NOTE = CallNote.CONTENT_ITEM_TYPE;
@@ -61,6 +85,7 @@ public class Notes {
      */
     public static final Uri CONTENT_DATA_URI = Uri.parse("content://" + AUTHORITY + "/data");
 
+    // note 表（或 note 视图）字段约定。
     public interface NoteColumns {
         /**
          * The unique ID for a row
@@ -167,6 +192,7 @@ public class Notes {
         public static final String VERSION = "version";
     }
 
+    // data 表字段约定：通过 MIME_TYPE 区分不同数据子类型。
     public interface DataColumns {
         /**
          * The unique ID for a row
@@ -241,6 +267,7 @@ public class Notes {
         public static final String DATA5 = "data5";
     }
 
+    // 文本便签数据模型对应的常量定义。
     public static final class TextNote implements DataColumns {
         /**
          * Mode to indicate the text in check list mode or not
@@ -257,6 +284,7 @@ public class Notes {
         public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/text_note");
     }
 
+    // 通话便签数据模型对应的常量定义。
     public static final class CallNote implements DataColumns {
         /**
          * Call date for this record
