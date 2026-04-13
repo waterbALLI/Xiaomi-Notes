@@ -19,7 +19,7 @@ package net.micode.notes.data;
 import android.net.Uri;
 
 /**
- * 文件注释说明：这一堆定义就是小米便签的配置中心，规定了笔记的类型、文件夹的结构、传参的名称以及桌面组件的规格
+ * 文件注释说明：这一堆定义就是小米便签的配置中心，（）规定了笔记的类型、文件夹的结构、传参的名称以及桌面组件的规格
  * 文件路径: app/src/main/java/net/micode/notes/data/Notes.java
  * 文件类型: Data Contract（数据契约）
  * 功能描述:
