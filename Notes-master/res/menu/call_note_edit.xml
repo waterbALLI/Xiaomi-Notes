@@ -39,6 +39,10 @@
         android:title="@string/menu_send_to_desktop"/>
 
     <item
+        android:id="@+id/menu_copy_note"
+        android:title="@string/menu_copy_note"/>
+
+    <item
         android:id="@+id/menu_alert"
         android:title="@string/menu_alert" />
 

@@ -187,6 +187,11 @@
     <!-- 通用按钮 -->
     <string name="button_delete">Delete</string>
 
+    <!-- 字数统计 -->
+    <string name="word_count_format">%d字</string>
+    <string name="menu_copy_note">Copy note</string>
+    <string name="toast_note_copied">Note copied to clipboard</string>
+
     <!-- 文件夹相关 -->
     <string name="call_record_folder_name">Call notes</string>
     <string name="hint_foler_name">Input name</string>

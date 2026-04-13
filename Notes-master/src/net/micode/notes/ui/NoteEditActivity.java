@@ -27,12 +27,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.ClipboardManager;
+import android.content.ClipData;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.text.Editable;
 import android.text.format.DateUtils;
 import android.text.style.BackgroundColorSpan;
 import android.util.Log;
@@ -82,6 +86,8 @@ public class NoteEditActivity extends Activity implements OnClickListener,
         public TextView tvAlertDate;
 
         public ImageView ibSetBgColor;
+
+        public TextView tvWordCount;
     }
 
     private static final Map<Integer, Integer> sBgSelectorBtnsMap = new HashMap<Integer, Integer>();
@@ -293,6 +299,9 @@ public class NoteEditActivity extends Activity implements OnClickListener,
          * is not ready
          */
         showAlertHeader();
+
+        // 初始化字数统计
+        updateWordCount(mWorkingNote.getContent());
     }
 
     private void showAlertHeader() {
@@ -310,6 +319,24 @@ public class NoteEditActivity extends Activity implements OnClickListener,
             mNoteHeaderHolder.tvAlertDate.setVisibility(View.GONE);
             mNoteHeaderHolder.ivAlertIcon.setVisibility(View.GONE);
         };
+
+        // 初始化字数统计
+        updateWordCount(mWorkingNote.getContent());
+    }
+
+    /**
+     * 更新字数统计显示
+     */
+    private void updateWordCount(String text) {
+        if (mNoteHeaderHolder.tvWordCount != null) {
+            int wordCount = 0;
+            if (!TextUtils.isEmpty(text)) {
+                // 计算非空白字符的数量
+                String trimmedText = text.trim();
+                wordCount = trimmedText.length();
+            }
+            mNoteHeaderHolder.tvWordCount.setText(getString(R.string.word_count_format, wordCount));
+        }
     }
 
     @Override
@@ -371,6 +398,7 @@ public class NoteEditActivity extends Activity implements OnClickListener,
         mNoteHeaderHolder.tvAlertDate = (TextView) findViewById(R.id.tv_alert_date);
         mNoteHeaderHolder.ibSetBgColor = (ImageView) findViewById(R.id.btn_set_bg_color);
         mNoteHeaderHolder.ibSetBgColor.setOnClickListener(this);
+        mNoteHeaderHolder.tvWordCount = (TextView) findViewById(R.id.tv_word_count);
         mNoteEditor = (EditText) findViewById(R.id.note_edit_view);
         mNoteEditorPanel = findViewById(R.id.sv_note_edit);
         mNoteBgColorSelector = findViewById(R.id.note_bg_color_selector);
@@ -395,6 +423,22 @@ public class NoteEditActivity extends Activity implements OnClickListener,
             mFontSizeId = ResourceParser.BG_DEFAULT_FONT_SIZE;
         }
         mEditTextList = (LinearLayout) findViewById(R.id.note_edit_list);
+
+        // 添加文本变化监听器来更新字数统计
+        mNoteEditor.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                updateWordCount(s.toString());
+            }
+        });
     }
 
     @Override
@@ -541,6 +585,9 @@ public class NoteEditActivity extends Activity implements OnClickListener,
             case R.id.menu_send_to_desktop:
                 sendToDesktop();
                 break;
+            case R.id.menu_copy_note:
+                copyNoteToClipboard();
+                break;
             case R.id.menu_alert:
                 setReminder();
                 break;
@@ -584,6 +631,24 @@ public class NoteEditActivity extends Activity implements OnClickListener,
         intent.setAction(Intent.ACTION_INSERT_OR_EDIT);
         intent.putExtra(Notes.INTENT_EXTRA_FOLDER_ID, mWorkingNote.getFolderId());
         startActivity(intent);
+    }
+
+    /**
+     * 复制便签内容到剪贴板
+     */
+    private void copyNoteToClipboard() {
+        getWorkingText(); // 确保获取最新的文本内容
+        String noteContent = mWorkingNote.getContent();
+
+        if (!TextUtils.isEmpty(noteContent)) {
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("Note Content", noteContent);
+            clipboard.setPrimaryClip(clip);
+
+            Toast.makeText(this, R.string.toast_note_copied, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, R.string.error_note_empty_for_send_to_desktop, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void deleteCurrentNote() {

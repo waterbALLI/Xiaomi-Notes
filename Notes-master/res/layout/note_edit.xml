@@ -61,6 +61,15 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:background="@drawable/bg_btn_set_color" />
+
+            <TextView
+                android:id="@+id/tv_word_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="8dip"
+                android:textAppearance="@style/TextAppearanceSecondaryItem"
+                android:text="0字" />
         </LinearLayout>
 
         <LinearLayout
