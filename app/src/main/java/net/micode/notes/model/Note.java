@@ -134,7 +134,7 @@ public class Note {
     public void setTextData(String key, String value) {
         mNoteData.setTextData(key, value);
     }
-
+// 以下种种都是在进行一种封装
     public void setTextDataId(long id) {
         mNoteData.setTextDataId(id);
     }
@@ -173,6 +173,7 @@ public class Note {
      * @param noteId 当前操作的便签 ID
      * @return true 表示保存成功，false 表示保存失败
      */
+    // 这里的保存逻辑非常重要，直接关系到用户编辑便签时的体验流畅度和数据一致性。
     public boolean syncNote(Context context, long noteId) {
         if (noteId <= 0) {
             throw new IllegalArgumentException("Wrong note id:" + noteId);
