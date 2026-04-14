@@ -162,7 +162,8 @@ public class NotesProvider extends ContentProvider {
         Cursor c = null;
         SQLiteDatabase db = mHelper.getReadableDatabase(); // 获取只读数据库句柄
         String id = null;
-        // 根据调用方传入的URI进行匹配，执行不同的查询方案
+        // 根据调用方传入的URI进行匹配，执行不同的查询方案， URI 路由分发 (Switch-Case 逻辑)，就用到我们之前定义的哪个1 2 3 4 5 6了
+
         switch (mMatcher.match(uri)) {
             case URI_NOTE:
                 c = db.query(TABLE.NOTE, projection, selection, selectionArgs, null, null,
@@ -214,7 +215,7 @@ public class NotesProvider extends ContentProvider {
                     Log.e(TAG, "got exception: " + ex.toString());
                 }
                 break;
-            default:
+            default://未知 URI 拦截，抛出异常
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
         // 当查询成功返回有效的Cursor时，为其绑定ContentResolver的观察监听通知，一旦该URI下数据发生变动，这个游标会自动感知
@@ -229,7 +230,8 @@ public class NotesProvider extends ContentProvider {
      */
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        SQLiteDatabase db = mHelper.getWritableDatabase(); // 获取可写的数据库句柄
+        SQLiteDatabase db = mHelper.getWritableDatabase(); // 与查询不同，插入操作需要获取可写的数据库句柄。
+        // 如果磁盘空间不足，这一步可能会报错
         long dataId = 0, noteId = 0, insertedId = 0;
         switch (mMatcher.match(uri)) {
             case URI_NOTE:
@@ -264,6 +266,40 @@ public class NotesProvider extends ContentProvider {
     /**
      * 响应删除数据的请求。
      */
+    //ContentProvider 中的 delete 方法实现。
+    // 的作用是根据传入的 URI 和条件，从底层 SQLite 数据库中删除数据，并返回受影响的行数。
+    //① 安全防护：系统文件夹保护
+    //这是这段代码最特别的地方。在处理 URI_NOTE（删除笔记列表）和 URI_NOTE_ITEM（删除特定笔记）时，它做了一个强制限制：
+    //
+    //NoteColumns.ID + ">0 ": 代码默认 ID 小于或等于 0 的记录是“系统级”数据（比如根目录、回收站、或默认文件夹）。
+    //
+    //拦截机制：如果你尝试删除 ID 为 0 或负数的笔记，代码要么在 SQL 条件里过滤掉它们，要么直接 break 跳出，从而保证了应用核心结构的稳定性。
+    //
+    //② 灵活的删除范围
+    //批量删除 (URI_NOTE, URI_DATA)：根据传入的 selection 条件删除多行。
+    //
+    //精准删除 (URI_NOTE_ITEM, URI_DATA_ITEM)：通过 getPathSegments().get(1) 提取 URI 路径中的 ID，并将其锁定为删除条件。
+    //
+    //③ 标志位 deleteData 的作用
+    //代码中使用了一个布尔值 deleteData。当删除的是 DATA 表中的内容（比如笔记中的某一项具体内容、一张图片等）时，
+    // 该值设为 true。这是为了解决数据间的依赖关系
+
+ //据联动与通知 (Observer Pattern)
+    //在删除执行成功（count > 0）后，代码进行了两次通知：
+    //
+    //数据层级联动通知：
+    //
+    //Java
+    //if (deleteData) {
+    //    getContext().getContentResolver().notifyChange(Notes.CONTENT_NOTE_URI, null);
+    //}
+    //逻辑： 如果删除了 Data 表的内容，即便 Note 表本身没变，但因为 Note 的显示通常依赖于 Data，所以必须通知监听 Note 表的 UI 界面也去刷新一下。
+    //
+    //自身通知：
+    //
+    //Java
+    //getContext().getContentResolver().notifyChange(uri, null);
+    //逻辑： 通知所有监听当前删除地址的观察者。
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         int count = 0;
