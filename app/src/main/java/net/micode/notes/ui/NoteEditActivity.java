@@ -33,6 +33,8 @@ import android.preference.PreferenceManager;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.text.Editable;
 import android.text.format.DateUtils;
 import android.text.style.BackgroundColorSpan;
 import android.util.Log;
@@ -79,9 +81,15 @@ public class NoteEditActivity extends Activity implements OnClickListener,
 
         public ImageView ivAlertIcon;
 
+        public ImageView ivBurnIcon;
+
+        public ImageView ivDeleteIcon;
+
         public TextView tvAlertDate;
 
         public ImageView ibSetBgColor;
+
+        public TextView tvCharCount;
     }
 
     private static final Map<Integer, Integer> sBgSelectorBtnsMap = new HashMap<Integer, Integer>();
@@ -293,6 +301,23 @@ public class NoteEditActivity extends Activity implements OnClickListener,
          * is not ready
          */
         showAlertHeader();
+        updateCharCount();
+        
+        // Handle read-after-burn counting here
+        if (mWorkingNote.existInDatabase() && mWorkingNote.getNoteId() > 0) {
+            int currentBurnCount = mSharedPrefs.getInt("BurnCount_" + mWorkingNote.getNoteId(), 0);
+            if (currentBurnCount > 0) {
+                currentBurnCount--;
+                mSharedPrefs.edit().putInt("BurnCount_" + mWorkingNote.getNoteId(), currentBurnCount).apply();
+                if (currentBurnCount == 0) {
+                    Toast.makeText(this, "阅后即焚：次数已耗尽，便签自动删除", Toast.LENGTH_LONG).show();
+                    deleteCurrentNote();
+                    finish();
+                } else {
+                    Toast.makeText(this, "阅后即焚：您还可以查看此便签 " + currentBurnCount + " 次", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
     }
 
     private void showAlertHeader() {
@@ -367,13 +392,34 @@ public class NoteEditActivity extends Activity implements OnClickListener,
         mHeadViewPanel = findViewById(R.id.note_title);
         mNoteHeaderHolder = new HeadViewHolder();
         mNoteHeaderHolder.tvModified = (TextView) findViewById(R.id.tv_modified_date);
+        mNoteHeaderHolder.tvCharCount = (TextView) findViewById(R.id.tv_char_count);
         mNoteHeaderHolder.ivAlertIcon = (ImageView) findViewById(R.id.iv_alert_icon);
+        mNoteHeaderHolder.ivBurnIcon = (ImageView) findViewById(R.id.iv_burn_icon);
+        mNoteHeaderHolder.ivDeleteIcon = (ImageView) findViewById(R.id.iv_delete_icon);
+        
+        mNoteHeaderHolder.ivBurnIcon.setOnClickListener(this);
+        mNoteHeaderHolder.ivDeleteIcon.setOnClickListener(this);
+        
         mNoteHeaderHolder.tvAlertDate = (TextView) findViewById(R.id.tv_alert_date);
         mNoteHeaderHolder.ibSetBgColor = (ImageView) findViewById(R.id.btn_set_bg_color);
         mNoteHeaderHolder.ibSetBgColor.setOnClickListener(this);
         mNoteEditor = (EditText) findViewById(R.id.note_edit_view);
         mNoteEditorPanel = findViewById(R.id.sv_note_edit);
         mNoteBgColorSelector = findViewById(R.id.note_bg_color_selector);
+        
+        mNoteEditor.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                updateCharCount();
+            }
+        });
+
         for (int id : sBgSelectorBtnsMap.keySet()) {
             ImageView iv = (ImageView) findViewById(id);
             iv.setOnClickListener(this);
@@ -449,7 +495,57 @@ public class NoteEditActivity extends Activity implements OnClickListener,
                         TextAppearanceResources.getTexAppearanceResource(mFontSizeId));
             }
             mFontSizeSelector.setVisibility(View.GONE);
+        } else if (id == R.id.iv_delete_icon) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getString(R.string.alert_title_delete));
+            builder.setIcon(android.R.drawable.ic_dialog_alert);
+            builder.setMessage(getString(R.string.alert_message_delete_note));
+            builder.setPositiveButton(android.R.string.ok,
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            deleteCurrentNote();
+                            finish();
+                        }
+                    });
+            builder.setNegativeButton(android.R.string.cancel, null);
+            builder.show();
+        } else if (id == R.id.iv_burn_icon) {
+            showBurnCountDialog();
         }
+    }
+
+    private void showBurnCountDialog() {
+        if (!mWorkingNote.existInDatabase()) {
+            saveNote();
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("设置阅后即焚次数");
+        
+        final EditText input = new EditText(this);
+        input.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+        input.setHint("输入查看次数(0表示关闭)");
+        builder.setView(input);
+
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String val = input.getText().toString();
+                if (!TextUtils.isEmpty(val)) {
+                    int count = Integer.parseInt(val);
+                    if (mWorkingNote.getNoteId() > 0) {
+                        mSharedPrefs.edit().putInt("BurnCount_" + mWorkingNote.getNoteId(), count).apply();
+                        if (count > 0) {
+                            showToast(R.string.info_note_enter_desktop, Toast.LENGTH_SHORT);
+                            Toast.makeText(NoteEditActivity.this, "已开启阅后即焚: " + count + "次后自动删除", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(NoteEditActivity.this, "已关闭阅后即焚", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            }
+        });
+        builder.setNegativeButton("取消", null);
+        builder.show();
     }
 
     @Override
@@ -744,6 +840,18 @@ public class NoteEditActivity extends Activity implements OnClickListener,
         edit.setOnTextViewChangeListener(this);
         edit.setIndex(index);
         edit.setText(getHighlightQueryResult(item, mUserQuery));
+        edit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                updateCharCount();
+            }
+        });
         return view;
     }
 
@@ -770,6 +878,29 @@ public class NoteEditActivity extends Activity implements OnClickListener,
             mNoteEditor.setText(getHighlightQueryResult(mWorkingNote.getContent(), mUserQuery));
             mEditTextList.setVisibility(View.GONE);
             mNoteEditor.setVisibility(View.VISIBLE);
+        }
+        updateCharCount();
+    }
+
+    private void updateCharCount() {
+        int count = 0;
+        if (mWorkingNote != null) {
+            if (mWorkingNote.getCheckListMode() == TextNote.MODE_CHECK_LIST) {
+                for (int i = 0; i < mEditTextList.getChildCount(); i++) {
+                    View view = mEditTextList.getChildAt(i);
+                    NoteEditText edit = (NoteEditText) view.findViewById(R.id.et_edit_text);
+                    if (edit != null && !TextUtils.isEmpty(edit.getText())) {
+                        count += edit.getText().toString().replaceAll("\\s", "").length();
+                    }
+                }
+            } else {
+                if (mNoteEditor != null && mNoteEditor.getText() != null) {
+                    count = mNoteEditor.getText().toString().replaceAll("\\s", "").length();
+                }
+            }
+        }
+        if (mNoteHeaderHolder != null && mNoteHeaderHolder.tvCharCount != null) {
+            mNoteHeaderHolder.tvCharCount.setText("字数:" + count);
         }
     }
 
