@@ -157,6 +157,8 @@ public class NoteEditActivity extends Activity implements OnClickListener,
     private String mUserQuery;
     private Pattern mPattern;
 
+    private boolean mMarkForBurn = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -308,12 +310,12 @@ public class NoteEditActivity extends Activity implements OnClickListener,
             int currentBurnCount = mSharedPrefs.getInt("BurnCount_" + mWorkingNote.getNoteId(), 0);
             if (currentBurnCount > 0) {
                 currentBurnCount--;
-                mSharedPrefs.edit().putInt("BurnCount_" + mWorkingNote.getNoteId(), currentBurnCount).apply();
                 if (currentBurnCount == 0) {
-                    Toast.makeText(this, "阅后即焚：次数已耗尽，便签自动删除", Toast.LENGTH_LONG).show();
-                    deleteCurrentNote();
-                    finish();
+                    Toast.makeText(this, "阅后即焚：这是最后一次查看，关闭后自动删除", Toast.LENGTH_LONG).show();
+                    mMarkForBurn = true;
+                    mSharedPrefs.edit().remove("BurnCount_" + mWorkingNote.getNoteId()).apply();
                 } else {
+                    mSharedPrefs.edit().putInt("BurnCount_" + mWorkingNote.getNoteId(), currentBurnCount).apply();
                     Toast.makeText(this, "阅后即焚：您还可以查看此便签 " + currentBurnCount + " 次", Toast.LENGTH_LONG).show();
                 }
             }
@@ -446,7 +448,10 @@ public class NoteEditActivity extends Activity implements OnClickListener,
     @Override
     protected void onPause() {
         super.onPause();
-        if(saveNote()) {
+        if (mMarkForBurn) {
+            deleteCurrentNote();
+            Log.d(TAG, "Note data was burned");
+        } else if(saveNote()) {
             Log.d(TAG, "Note data was saved with length:" + mWorkingNote.getContent().length());
         }
         clearSettingState();
@@ -554,7 +559,9 @@ public class NoteEditActivity extends Activity implements OnClickListener,
             return;
         }
 
-        saveNote();
+        if (!mMarkForBurn) {
+            saveNote();
+        }
         super.onBackPressed();
     }
 
@@ -662,7 +669,11 @@ public class NoteEditActivity extends Activity implements OnClickListener,
 
     private void createNewNote() {
         // Firstly, save current editing notes
-        saveNote();
+        if (mMarkForBurn) {
+            deleteCurrentNote();
+        } else {
+            saveNote();
+        }
 
         // For safety, start a new NoteEditActivity
         finish();
