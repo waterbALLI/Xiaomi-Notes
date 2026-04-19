@@ -278,7 +278,7 @@ public class NoteEditActivity extends Activity implements OnClickListener,
             mNoteEditor.setSelection(mNoteEditor.getText().length());
         }
         for (Integer id : sBgSelectorSelectionMap.keySet()) {
-            findViewById(sBgSelectorSelectionMap.get(id)).setVisibility(View.GONE);
+             findViewById(sBgSelectorSelectionMap.get(id)).setVisibility(View.GONE);
         }
         mHeadViewPanel.setBackgroundResource(mWorkingNote.getTitleBgResId());
         mNoteEditorPanel.setBackgroundResource(mWorkingNote.getBgColorResId());
