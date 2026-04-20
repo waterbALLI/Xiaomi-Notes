@@ -7,7 +7,7 @@ NotesDatabaseHelper（建筑工）：
 
 NotesProvider（仓库管理员）：
 
-也就是你之前分析的那四个核心方法（query, insert 等）所在地。
+也就是我之前分析的那四个核心方法（query, insert 等）所在地。
 
 它不关心业务逻辑，只负责执行指令：你给它 URI 和数据，它负责写进数据库或删掉。
 
